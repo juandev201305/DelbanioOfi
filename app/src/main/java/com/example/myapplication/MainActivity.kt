@@ -23,16 +23,30 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.example.myapplication.data.Profesor
+import com.example.myapplication.ui.HomeScreen
+import com.example.myapplication.ui.ProfesorScreen
 import com.example.myapplication.ui.ProfesorViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            MaterialTheme {
-                Surface(Modifier.fillMaxSize()) {
-                    PantallaProfesores()
+            val navController = rememberNavController()
+
+            Surface(color = MaterialTheme.colorScheme.background) {
+                NavHost(
+                    navController = navController,
+                    startDestination = "home"
+                ) {
+                    composable  ("home") { HomeScreen(navController) }
+                    composable("profesor") { ProfesorScreen() }
+                    composable("inspector") {
+                        // TODO: InspectorScreen() cuando la hagas
+                    }
                 }
             }
         }
