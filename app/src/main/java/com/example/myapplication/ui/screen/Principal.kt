@@ -1,4 +1,4 @@
-package com.example.myapplication.ui
+package com.example.myapplication.ui.screen
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*

@@ -1,8 +1,8 @@
-package com.example.myapplication.data
+package com.example.myapplication.data.models
+
 /**
 * CLASE MODELO/POJO
 */
 data class Profesor(
-    val id: Int,
     val nombre: String
 )

@@ -1,4 +1,9 @@
-package com.example.myapplication.data
+package com.example.myapplication.data.repository
+
+import com.example.myapplication.data.models.Profesor
+import com.example.myapplication.data.network.ApiClient
+import com.example.myapplication.data.network.LiceoApi
+
 /**
  * Es la capa intermedia entre la app y la api.
  * El repositorio se encarga de pedir y devolver datos
