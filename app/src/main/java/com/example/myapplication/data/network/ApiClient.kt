@@ -11,7 +11,7 @@ import retrofit2.converter.gson.GsonConverterFactory
  *
  * Autor : Juan Correa
  * Revision : Mauricio Saavedra
- * Verción : 0.0.0.1
+ * Versión : 0.0.0.1
  * Cambios:
  *
  * Fecha : 27-08-2025
@@ -20,50 +20,31 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 /**
  * Se declara un objeto Singleton llamado "ApiCliente";
- * Un objeto Singleton es una clase que tendra una sola
- * en toda la App
+ * Un objeto Singleton es una clase que tendrá una sola
+ * instancia en toda la App.
  */
 object ApiClient {
-    //Se define la url BASE de la api en una variable constante y privada.
-    //luego se agregaran los endspoint
     private const val URL_BASE = "http://181.212.53.98:8080/liceo/"
-    //Aqui se crea un cliente HTTP que se encarga de
-    //Enviar y recibir peticiones.
-    //by lazy significa que el objeto se crea solo la primera vez que se usa
+
     private val cliente by lazy {
-        //Se declara una variable que captura las peticiones y repuestas
-        //Configuramos el nivel de detalles de los logs
-        //.BODY es para que muestre toda la informacion de peticion y respuestas
-        val log = HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BODY }
-        //Aca se contruye el cliente HTTP y se añade un interceptor para
-        //ver las peticiones en el logcat
+        val log = HttpLoggingInterceptor().apply {
+            level = HttpLoggingInterceptor.Level.BODY
+        }
         OkHttpClient.Builder()
             .addInterceptor(log)
             .build()
     }
-    //Se crea una propieda del tipo LiceoApi
+
     val api: LiceoApi by lazy {
-        /*
-         * Se construye el objeto Retrofit:
-         * El cual se encarga de convertir interfaces
-         * en codigo real que hace peticiones
-        */
         Retrofit.Builder()
-            //Se le indica la URL BASE de la api a consumir
             .baseUrl(URL_BASE)
-            //Se le indica a RetroFit que use el
-            //el OkHttpCliente que se construyó en cliente
             .client(cliente)
-            //Se le agrega un convertidor de JSON
-            //esto para que el json recibido se convierta en objeto Kotlin y viceversa
-            .addConverterFactory(GsonConverterFactory.create())
-            //Se construye finalmente el objeto RetroFit con .build()
+            .addConverterFactory(GsonConverterFactory.create()) // ya no hace falta Gson custom
             .build()
-            //Esto le indica a RetroFit que tome la interfaz LiceoApi y cree una
-            //implementacion automatica para que pueda usarlo como un objeto real
             .create(LiceoApi::class.java)
     }
 }
+
 
 /**
  * DEFINICIONES

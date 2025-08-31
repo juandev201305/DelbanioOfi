@@ -1,11 +1,18 @@
 package com.example.myapplication.data.network
 
+import com.example.myapplication.data.request.MensajeEntrRequest
 import com.example.myapplication.data.models.Alumno
 import com.example.myapplication.data.models.Curso
 import com.example.myapplication.data.models.Letra
+import com.example.myapplication.data.models.MensajeEntr
 import com.example.myapplication.data.models.Nivel
 import com.example.myapplication.data.models.Profesor
+import com.example.myapplication.data.models.TipoPermiso
+import com.example.myapplication.data.models.Ubicacion
+import retrofit2.Response
+import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.POST
 
 /**
  * En esta interfaz se definen los endspoints de la api
@@ -33,4 +40,13 @@ interface LiceoApi {
 
     @GET("alumno")
     suspend fun getAlumnos(): List<Alumno>
+    @GET("permiso")
+    suspend fun getPermisos(): List<TipoPermiso>
+
+    @GET("ubicacion")
+    suspend fun getUbicaciones(): List<Ubicacion>
+
+    // POST para crear un mensaje entrante
+    @POST("mensajeEntr")
+    suspend fun crearMensajeEntr(@Body mensaje: MensajeEntrRequest): Response<Unit>
 }

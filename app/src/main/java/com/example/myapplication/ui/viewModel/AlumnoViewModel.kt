@@ -31,10 +31,12 @@ class AlumnoViewModel(
         }
     }
 
-    // Función para obtener alumnos por nivel y letra
     fun obtenerAlumnos(nivelId: Int, letraId: Int): List<Alumno> {
         val nivel = _niveles.value.find { it.id == nivelId } ?: return emptyList()
         val curso = nivel.cursos.find { it.letra.id == letraId } ?: return emptyList()
-        return curso.alumnos
+
+        return curso.alumnos.map { alumno ->
+            alumno.copy(curso = curso) // 🔥 aquí le inyectas el curso
+        }
     }
 }

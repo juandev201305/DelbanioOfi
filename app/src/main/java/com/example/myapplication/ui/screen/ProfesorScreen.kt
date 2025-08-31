@@ -27,10 +27,7 @@ fun ProfesorScreen(navController: NavController, viewModel: ProfesorViewModel = 
                 title = { Text("Lista de Profesores") },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Volver"
-                        )
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Volver")
                     }
                 }
             )
@@ -43,21 +40,15 @@ fun ProfesorScreen(navController: NavController, viewModel: ProfesorViewModel = 
                 .padding(16.dp)
         ) {
             items(profesores) { profesor ->
-                ProfesorItem(profesor) {
-                    navController.navigate("tipoPermiso")
+                Button(
+                    onClick = { navController.navigate("tipoPermiso/${profesor.id}") },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 4.dp)
+                ) {
+                    Text(text = profesor.nombre)
                 }
             }
         }
-    }
-}
-@Composable
-fun ProfesorItem(profesor: Profesor, onClick: () -> Unit) {
-    Button(
-        onClick = onClick,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 4.dp)
-    ) {
-        Text(text = profesor.nombre)
     }
 }

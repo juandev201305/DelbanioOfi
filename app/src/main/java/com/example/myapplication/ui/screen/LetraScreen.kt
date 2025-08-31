@@ -16,7 +16,13 @@ import com.example.myapplication.ui.viewModel.NivelViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LetraScreen(navController: NavController, nivelId: Int, viewModel: NivelViewModel) {
+fun LetraScreen(
+    navController: NavController,
+    nivelId: Int,
+    profesorId: Int,
+    tipoPermisoId: Int,
+    viewModel: NivelViewModel
+) {
     val letras = viewModel.obtenerLetrasPorNivel(nivelId)
 
     Scaffold(
@@ -32,25 +38,20 @@ fun LetraScreen(navController: NavController, nivelId: Int, viewModel: NivelView
         }
     ) { padding ->
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
-                .padding(16.dp),
+            modifier = Modifier.fillMaxSize().padding(16.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             letras.forEach { letra ->
                 Button(
-                    onClick = { navController.navigate("alumnos/$nivelId/${letra.id}") },
+                    onClick = {
+                        navController.navigate("alumnos/$nivelId/${letra.id}/$profesorId/$tipoPermisoId")
+                    },
                     modifier = Modifier.fillMaxWidth(0.5f)
                 ) {
                     Text("Letra: ${letra.letra}")
                 }
                 Spacer(Modifier.height(12.dp))
-            }
-
-            if (letras.isEmpty()) {
-                Text("No hay letras disponibles")
             }
         }
     }

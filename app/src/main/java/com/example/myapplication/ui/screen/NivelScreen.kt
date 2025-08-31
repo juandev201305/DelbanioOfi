@@ -18,7 +18,12 @@ import com.example.myapplication.ui.viewModel.NivelViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NivelScreen(navController: NavController, viewModel: NivelViewModel) {
+fun NivelScreen(
+    navController: NavController,
+    profesorId: Int,
+    tipoPermisoId: Int,
+    viewModel: NivelViewModel
+) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -32,20 +37,25 @@ fun NivelScreen(navController: NavController, viewModel: NivelViewModel) {
         }
     ) { padding ->
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
-                .padding(16.dp),
+            modifier = Modifier.fillMaxSize().padding(padding).padding(16.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Button(onClick = { navController.navigate("letras/1") }) { Text("Primero Medio") }
+            Button(onClick = { navController.navigate("letras/1/$profesorId/$tipoPermisoId") }) {
+                Text("Primero Medio")
+            }
             Spacer(Modifier.height(12.dp))
-            Button(onClick = { navController.navigate("letras/2") }) { Text("Segundo Medio") }
+            Button(onClick = { navController.navigate("letras/2/$profesorId/$tipoPermisoId") }) {
+                Text("Segundo Medio")
+            }
             Spacer(Modifier.height(12.dp))
-            Button(onClick = { navController.navigate("letras/3") }) { Text("Tercero Medio") }
+            Button(onClick = { navController.navigate("letras/3/$profesorId/$tipoPermisoId") }) {
+                Text("Tercero Medio")
+            }
             Spacer(Modifier.height(12.dp))
-            Button(onClick = { navController.navigate("letras/4") }) { Text("Cuarto Medio") }
+            Button(onClick = { navController.navigate("letras/4/$profesorId/$tipoPermisoId") }) {
+                Text("Cuarto Medio")
+            }
         }
     }
 }
