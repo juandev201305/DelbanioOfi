@@ -19,7 +19,6 @@ class MensajeEntrRepository(private val api: LiceoApi) {
         curso: Curso,
         permiso: TipoPermiso,
         profesorId: Int,
-        inspectorId: Int,
         ubicacionId: Int,
         hora: String
     ): Response<Unit> {
@@ -28,7 +27,6 @@ class MensajeEntrRepository(private val api: LiceoApi) {
             curso = curso,
             permiso = permiso,
             profesorId = profesorId,
-            inspectorId = inspectorId,
             ubicacionId = ubicacionId,
             hora = hora
         )

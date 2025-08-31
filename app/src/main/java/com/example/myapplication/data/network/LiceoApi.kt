@@ -3,8 +3,10 @@ package com.example.myapplication.data.network
 import com.example.myapplication.data.request.MensajeEntrRequest
 import com.example.myapplication.data.models.Alumno
 import com.example.myapplication.data.models.Curso
+import com.example.myapplication.data.models.Inspector
 import com.example.myapplication.data.models.Letra
 import com.example.myapplication.data.models.MensajeEntr
+import com.example.myapplication.data.models.MensajeSali
 import com.example.myapplication.data.models.Nivel
 import com.example.myapplication.data.models.Profesor
 import com.example.myapplication.data.models.TipoPermiso
@@ -49,4 +51,10 @@ interface LiceoApi {
     // POST para crear un mensaje entrante
     @POST("mensajeEntr")
     suspend fun crearMensajeEntr(@Body mensaje: MensajeEntrRequest): Response<Unit>
+
+    @GET("inspector")
+    suspend fun getInspectores(): List<Inspector>
+
+    @GET("mensajeSali/ultimo")
+    suspend fun getUltimo(): MensajeSali
 }

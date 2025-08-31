@@ -1,8 +1,8 @@
 plugins {
-
-    alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kotlin.compose)
+    id("com.android.application")
+    id("org.jetbrains.kotlin.android")
+    id("org.jetbrains.kotlin.plugin.compose") // si usas Compose Compiler
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -64,6 +64,15 @@ dependencies {
 
     // Core
     implementation("androidx.core:core-ktx:1.13.1")
+
+    // Firebase BoM
+    implementation(platform("com.google.firebase:firebase-bom:34.2.0"))
+
+    // Firebase Analytics
+    implementation("com.google.firebase:firebase-analytics")
+
+    // Firebase Cloud Messaging (para notificaciones push)
+    implementation("com.google.firebase:firebase-messaging")
 
     // Tests
     testImplementation("junit:junit:4.13.2")

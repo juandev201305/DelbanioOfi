@@ -1,11 +1,19 @@
 package com.example.myapplication
 
+
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
+import android.Manifest
+import android.content.pm.PackageManager
 
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.LaunchedEffect
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
 
@@ -16,6 +24,7 @@ import androidx.navigation.navArgument
 import com.example.myapplication.ui.screen.AlumnoScreen
 
 import com.example.myapplication.ui.screen.HomeScreen
+import com.example.myapplication.ui.screen.InspectorScreen
 import com.example.myapplication.ui.screen.LetraScreen
 import com.example.myapplication.ui.screen.NivelScreen
 
@@ -23,9 +32,11 @@ import com.example.myapplication.ui.screen.ProfesorScreen
 import com.example.myapplication.ui.screen.TipoPermisoScreen
 import com.example.myapplication.ui.screen.UbicacionScreen
 import com.example.myapplication.ui.viewModel.AlumnoViewModel
+import com.example.myapplication.ui.viewModel.InspectorViewModel
 import com.example.myapplication.ui.viewModel.NivelViewModel
 import com.example.myapplication.ui.viewModel.ProfesorViewModel
 import com.example.myapplication.ui.viewModel.TipoPermisoViewModel
+
 
 
 class MainActivity : ComponentActivity() {
@@ -34,6 +45,31 @@ class MainActivity : ComponentActivity() {
         setContent {
             MaterialTheme {
                 Surface(color = MaterialTheme.colorScheme.background) {
+                    // 🚨 Launcher para pedir el permiso
+                    val requestPermissionLauncher = rememberLauncherForActivityResult(
+                        contract = ActivityResultContracts.RequestPermission(),
+                        onResult = { isGranted: Boolean ->
+                            if (isGranted) {
+                                // ✅ Usuario aceptó las notificaciones
+                            } else {
+                                // ❌ Usuario rechazó
+                            }
+                        }
+                    )
+
+                    LaunchedEffect(Unit) {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                            val context = this@MainActivity
+                            if (ContextCompat.checkSelfPermission(
+                                    context,
+                                    Manifest.permission.POST_NOTIFICATIONS
+                                ) != PackageManager.PERMISSION_GRANTED
+                            ) {
+                                requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                            }
+                        }
+                    }
+
                     val navController = rememberNavController()
 
                     // Instancias globales de ViewModels
@@ -41,6 +77,7 @@ class MainActivity : ComponentActivity() {
                     val alumnoViewModel: AlumnoViewModel = viewModel()
                     val profesorViewModel: ProfesorViewModel = viewModel()
                     val tipoPermisoViewModel: TipoPermisoViewModel = viewModel()
+                    val inspectorViewModel: InspectorViewModel = viewModel()
 
                     NavHost(navController = navController, startDestination = "home") {
 
@@ -51,6 +88,9 @@ class MainActivity : ComponentActivity() {
 
                         composable("profesores") {
                             ProfesorScreen(navController = navController, viewModel = profesorViewModel)
+                        }
+                        composable("inspectores") {
+                            InspectorScreen()
                         }
 
                         composable(

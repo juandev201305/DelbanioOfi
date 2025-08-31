@@ -29,7 +29,7 @@ fun HomeScreen(navController: NavController) {
             Spacer(modifier = Modifier.height(10.dp))
 
             Button(
-                onClick = { navController.navigate("inspector") },
+                onClick = { navController.navigate("inspectores") },
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 32.dp)
             ) {
                 Text("Inspector")
