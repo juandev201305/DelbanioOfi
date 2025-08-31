@@ -8,7 +8,6 @@ data class MensajeEntrRequest(
     val curso: IdOnly,
     val permiso: IdOnly,
     val profesor: Int,
-    val inspector: Int,
     val ubicacion: Int,
     val horaEntrante: String
 )

@@ -18,7 +18,6 @@ fun buildMensajeEntrRequest(
     curso: Curso,
     permiso: TipoPermiso,
     profesorId: Int,
-    inspectorId: Int?,   // 👈 lo puedes mantener, pero ya no se usará
     ubicacionId: Int,
     hora: String
 ): MensajeEntrRequest {
@@ -27,7 +26,6 @@ fun buildMensajeEntrRequest(
         curso = IdOnly(curso.id),
         permiso = IdOnly(permiso.id),
         profesor = profesorId,
-        inspector = 1,   // 👈 aquí siempre fijo en 1
         ubicacion = ubicacionId,
         horaEntrante = hora
     )

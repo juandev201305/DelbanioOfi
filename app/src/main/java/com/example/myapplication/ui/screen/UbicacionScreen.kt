@@ -78,7 +78,6 @@ fun UbicacionScreen(
                                         curso = alumno.curso!!,
                                         permiso = tipoPermiso,
                                         profesorId = profesor.id,
-                                        inspectorId = 0,
                                         ubicacionId = ubicacion.id,
                                         hora = fechaHora
                                     )
