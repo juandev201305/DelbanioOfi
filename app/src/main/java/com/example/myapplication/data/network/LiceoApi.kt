@@ -56,5 +56,5 @@ interface LiceoApi {
     suspend fun getInspectores(): List<Inspector>
 
     @GET("mensajeSali/ultimo")
-    suspend fun getUltimo(): MensajeSali
+    suspend fun getUltimo(): Response<MensajeSali>
 }

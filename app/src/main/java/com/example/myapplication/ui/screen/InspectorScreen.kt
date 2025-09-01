@@ -18,15 +18,68 @@ import com.example.myapplication.data.repository.NotificacionRepository
 import com.example.myapplication.ui.viewModel.InspectorViewModel
 import com.example.myapplication.ui.viewModel.NotificacionViewModel
 import androidx.compose.runtime.getValue
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun InspectorScreen() {
-    val message by NotificacionRepository.lastMessage.collectAsState(initial = null)
+fun InspectorScreen(
+    navController: NavController? = null,
+    vm: InspectorViewModel = viewModel()
+) {
+    val mensaje by vm.mensaje.collectAsState()
 
-    Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-        Text("🔍 Buscando nuevos permisos...")
-
-        if (message != null) {
-            Text("📩 Último permiso recibido: $message")
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("Inspector") },
+                navigationIcon = {
+                    navController?.let {
+                        IconButton(onClick = { it.popBackStack() }) {
+                            Icon(
+                                Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = "Atrás"
+                            )
+                        }
+                    }
+                }
+            )
+        }
+    ) { padding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
+                .padding(16.dp),
+            verticalArrangement = Arrangement.Top
+        ) {
+            if (mensaje == null) {
+                Text(
+                    "Esperando mensajes...",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            } else {
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.surfaceVariant
+                    ),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+                ) {
+                    Column(modifier = Modifier.padding(16.dp)) {
+                        Text(
+                            "Alumno: ${mensaje!!.alumno}",
+                            style = MaterialTheme.typography.titleMedium
+                        )
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Text("Curso: ${mensaje!!.curso}")
+                        Text("Profesor: ${mensaje!!.profesor}")
+                        Text("Permiso: ${mensaje!!.permiso}")
+                        Text("Hora salida: ${mensaje!!.horaSalida}")
+                        Text("Ubicación: ${mensaje!!.ubicacion}")
+                    }
+                }
+            }
         }
     }
 }

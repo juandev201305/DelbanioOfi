@@ -9,6 +9,8 @@ import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import android.Manifest
 import android.content.pm.PackageManager
+import android.util.Log
+import android.widget.Toast
 
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -45,18 +47,28 @@ class MainActivity : ComponentActivity() {
         setContent {
             MaterialTheme {
                 Surface(color = MaterialTheme.colorScheme.background) {
-                    // 🚨 Launcher para pedir el permiso
+
+                    // 🔹 Lanzador de permisos
                     val requestPermissionLauncher = rememberLauncherForActivityResult(
                         contract = ActivityResultContracts.RequestPermission(),
                         onResult = { isGranted: Boolean ->
                             if (isGranted) {
-                                // ✅ Usuario aceptó las notificaciones
+                                Log.d("FCM", "✅ Notificaciones permitidas")
                             } else {
-                                // ❌ Usuario rechazó
+                                Log.w("FCM", "❌ Notificaciones rechazadas")
                             }
                         }
                     )
 
+                    // 🔹 NavController y ViewModels deben ir aquí (NO dentro de LaunchedEffect)
+                    val navController = rememberNavController()
+                    val nivelViewModel: NivelViewModel = viewModel()
+                    val alumnoViewModel: AlumnoViewModel = viewModel()
+                    val profesorViewModel: ProfesorViewModel = viewModel()
+                    val tipoPermisoViewModel: TipoPermisoViewModel = viewModel()
+                    val inspectorViewModel: InspectorViewModel = viewModel()
+
+                    // 🔹 Pedir permiso solo una vez
                     LaunchedEffect(Unit) {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                             val context = this@MainActivity
@@ -70,22 +82,11 @@ class MainActivity : ComponentActivity() {
                         }
                     }
 
-                    val navController = rememberNavController()
-
-                    // Instancias globales de ViewModels
-                    val nivelViewModel: NivelViewModel = viewModel()
-                    val alumnoViewModel: AlumnoViewModel = viewModel()
-                    val profesorViewModel: ProfesorViewModel = viewModel()
-                    val tipoPermisoViewModel: TipoPermisoViewModel = viewModel()
-                    val inspectorViewModel: InspectorViewModel = viewModel()
-
+                    // 🔹 NavHost
                     NavHost(navController = navController, startDestination = "home") {
-
-                        // Pantalla inicial
                         composable("home") {
                             HomeScreen(navController = navController)
                         }
-
                         composable("profesores") {
                             ProfesorScreen(navController = navController, viewModel = profesorViewModel)
                         }
@@ -93,9 +94,26 @@ class MainActivity : ComponentActivity() {
                             InspectorScreen()
                         }
 
+// Pantalla inicial
+                        composable("home") {
+                            HomeScreen(navController = navController)
+                        }
+
+                        composable("profesores") {
+                            ProfesorScreen(
+                                navController = navController,
+                                viewModel = profesorViewModel
+                            )
+                        }
+                        composable("inspectores") {
+                            InspectorScreen()
+                        }
+
                         composable(
                             "tipoPermiso/{profesorId}",
-                            arguments = listOf(navArgument("profesorId") { type = NavType.IntType })
+                            arguments = listOf(navArgument("profesorId") {
+                                type = NavType.IntType
+                            })
                         ) { backStackEntry ->
                             val profesorId = backStackEntry.arguments?.getInt("profesorId") ?: 0
                             TipoPermisoScreen(navController, profesorId, tipoPermisoViewModel)
@@ -109,8 +127,14 @@ class MainActivity : ComponentActivity() {
                             )
                         ) { backStackEntry ->
                             val profesorId = backStackEntry.arguments?.getInt("profesorId") ?: 0
-                            val tipoPermisoId = backStackEntry.arguments?.getInt("tipoPermisoId") ?: 0
-                            NivelScreen(navController, profesorId, tipoPermisoId, nivelViewModel)
+                            val tipoPermisoId =
+                                backStackEntry.arguments?.getInt("tipoPermisoId") ?: 0
+                            NivelScreen(
+                                navController,
+                                profesorId,
+                                tipoPermisoId,
+                                nivelViewModel
+                            )
                         }
 
                         composable(
@@ -123,8 +147,15 @@ class MainActivity : ComponentActivity() {
                         ) { backStackEntry ->
                             val nivelId = backStackEntry.arguments?.getInt("nivelId") ?: 0
                             val profesorId = backStackEntry.arguments?.getInt("profesorId") ?: 0
-                            val tipoPermisoId = backStackEntry.arguments?.getInt("tipoPermisoId") ?: 0
-                            LetraScreen(navController, nivelId, profesorId, tipoPermisoId, nivelViewModel)
+                            val tipoPermisoId =
+                                backStackEntry.arguments?.getInt("tipoPermisoId") ?: 0
+                            LetraScreen(
+                                navController,
+                                nivelId,
+                                profesorId,
+                                tipoPermisoId,
+                                nivelViewModel
+                            )
                         }
 
                         composable(
@@ -139,8 +170,16 @@ class MainActivity : ComponentActivity() {
                             val nivelId = backStackEntry.arguments?.getInt("nivelId") ?: 0
                             val letraId = backStackEntry.arguments?.getInt("letraId") ?: 0
                             val profesorId = backStackEntry.arguments?.getInt("profesorId") ?: 0
-                            val tipoPermisoId = backStackEntry.arguments?.getInt("tipoPermisoId") ?: 0
-                            AlumnoScreen(navController, nivelId, letraId, profesorId, tipoPermisoId, alumnoViewModel)
+                            val tipoPermisoId =
+                                backStackEntry.arguments?.getInt("tipoPermisoId") ?: 0
+                            AlumnoScreen(
+                                navController,
+                                nivelId,
+                                letraId,
+                                profesorId,
+                                tipoPermisoId,
+                                alumnoViewModel
+                            )
                         }
 
                         composable(
@@ -153,7 +192,8 @@ class MainActivity : ComponentActivity() {
                         ) { backStackEntry ->
                             val alumnoId = backStackEntry.arguments?.getInt("alumnoId") ?: 0
                             val profesorId = backStackEntry.arguments?.getInt("profesorId") ?: 0
-                            val tipoPermisoId = backStackEntry.arguments?.getInt("tipoPermisoId") ?: 0
+                            val tipoPermisoId =
+                                backStackEntry.arguments?.getInt("tipoPermisoId") ?: 0
 
                             // 🔥 Aquí aseguramos que curso siempre se setea al alumno
                             val alumno = alumnoViewModel.niveles.value
