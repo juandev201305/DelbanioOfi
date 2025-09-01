@@ -34,20 +34,33 @@ fun AlumnoScreen(
 ) {
     val alumnos = viewModel.obtenerAlumnos(nivelId, letraId)
 
-    Column(
-        modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        alumnos.forEach { alumno ->
-            Button(
-                onClick = {
-                    navController.navigate("ubicacion/${alumno.id}/$profesorId/$tipoPermisoId")
-                },
-                modifier = Modifier.fillMaxWidth(0.5f)
-            ) {
-                Text(alumno.nombre)
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("Selecciona Alumno") },
+                navigationIcon = {
+                    IconButton(onClick = { navController.popBackStack() }) {
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Volver")
+                    }
+                }
+            )
+        }
+    ) { padding ->
+        Column(
+            modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            alumnos.forEach { alumno ->
+                Button(
+                    onClick = {
+                        navController.navigate("ubicacion/${alumno.id}/$profesorId/$tipoPermisoId")
+                    },
+                    modifier = Modifier.fillMaxWidth(0.5f)
+                ) {
+                    Text(alumno.nombre)
+                }
+                Spacer(Modifier.height(12.dp))
             }
-            Spacer(Modifier.height(12.dp))
         }
     }
 }

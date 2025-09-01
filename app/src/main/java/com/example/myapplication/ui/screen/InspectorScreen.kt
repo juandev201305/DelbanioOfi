@@ -1,35 +1,34 @@
 package com.example.myapplication.ui.screen
 
+import android.Manifest
+import android.content.Intent
+import android.os.Build
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
-import com.example.myapplication.data.models.Inspector
-import com.example.myapplication.data.repository.NotificacionRepository
-import com.example.myapplication.ui.viewModel.InspectorViewModel
-import com.example.myapplication.ui.viewModel.NotificacionViewModel
-import androidx.compose.runtime.getValue
+import com.example.myapplication.service.InspectorService
+import com.example.myapplication.utils.NotificationHelper
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InspectorScreen(
-    navController: NavController? = null,
-    vm: InspectorViewModel = viewModel()
+    navController: NavController? = null
 ) {
-    val mensaje by vm.mensaje.collectAsState()
+    val context = LocalContext.current
+    var estadoServicio by remember { mutableStateOf("") }
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Inspector") },
+                title = { Text("Inspector Panel") },
                 navigationIcon = {
                     navController?.let {
                         IconButton(onClick = { it.popBackStack() }) {
@@ -47,38 +46,41 @@ fun InspectorScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .padding(16.dp),
+                .padding(24.dp),
             verticalArrangement = Arrangement.Top
         ) {
-            if (mensaje == null) {
-                Text(
-                    "Esperando mensajes...",
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            } else {
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 8.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.surfaceVariant
-                    ),
-                    elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
-                ) {
-                    Column(modifier = Modifier.padding(16.dp)) {
-                        Text(
-                            "Alumno: ${mensaje!!.alumno}",
-                            style = MaterialTheme.typography.titleMedium
-                        )
-                        Spacer(modifier = Modifier.height(4.dp))
-                        Text("Curso: ${mensaje!!.curso}")
-                        Text("Profesor: ${mensaje!!.profesor}")
-                        Text("Permiso: ${mensaje!!.permiso}")
-                        Text("Hora salida: ${mensaje!!.horaSalida}")
-                        Text("Ubicación: ${mensaje!!.ubicacion}")
-                    }
+            // Estado actual
+            Text(
+                text = estadoServicio,
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.primary
+            )
+
+            Spacer(Modifier.height(32.dp))
+
+            // 🔹 Botón ACTIVAR
+            Button(
+                modifier = Modifier.fillMaxWidth(),
+                onClick = {
+                    val intent = Intent(context, InspectorService::class.java)
+                    ContextCompat.startForegroundService(context, intent)
+                    estadoServicio = "Notificaciones activadas"
                 }
+            ) {
+                Text("Activar notificaciones")
+            }
+
+            Spacer(Modifier.height(16.dp))
+
+            // 🔹 Botón DESACTIVAR
+            OutlinedButton(
+                modifier = Modifier.fillMaxWidth(),
+                onClick = {
+                    context.stopService(Intent(context, InspectorService::class.java))
+                    estadoServicio = "Notificaciones desactivadas"
+                }
+            ) {
+                Text("Desactivar notificaciones")
             }
         }
     }

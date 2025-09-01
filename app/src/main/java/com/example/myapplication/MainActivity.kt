@@ -91,7 +91,7 @@ class MainActivity : ComponentActivity() {
                             ProfesorScreen(navController = navController, viewModel = profesorViewModel)
                         }
                         composable("inspectores") {
-                            InspectorScreen()
+                            InspectorScreen(navController = navController)
                         }
 
 // Pantalla inicial
