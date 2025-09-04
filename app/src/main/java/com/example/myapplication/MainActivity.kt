@@ -23,6 +23,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.myapplication.data.repository.InspectorRepository
 import com.example.myapplication.ui.screen.AlumnoScreen
 
 import com.example.myapplication.ui.screen.HomeScreen
@@ -84,16 +85,6 @@ class MainActivity : ComponentActivity() {
 
                     // 🔹 NavHost
                     NavHost(navController = navController, startDestination = "home") {
-                        composable("home") {
-                            HomeScreen(navController = navController)
-                        }
-                        composable("profesores") {
-                            ProfesorScreen(navController = navController, viewModel = profesorViewModel)
-                        }
-                        composable("inspectores") {
-                            InspectorScreen(navController = navController)
-                        }
-
 // Pantalla inicial
                         composable("home") {
                             HomeScreen(navController = navController)
@@ -106,9 +97,8 @@ class MainActivity : ComponentActivity() {
                             )
                         }
                         composable("inspectores") {
-                            InspectorScreen()
+                            InspectorScreen(viewModel = inspectorViewModel, navController = navController)
                         }
-
                         composable(
                             "tipoPermiso/{profesorId}",
                             arguments = listOf(navArgument("profesorId") {

@@ -1,31 +1,42 @@
 package com.example.myapplication.ui.viewModel
-
 import androidx.lifecycle.ViewModel
-import com.example.myapplication.data.models.MensajeSali
-import com.example.myapplication.data.repository.MensajeSaliRepository
+import androidx.lifecycle.viewModelScope
+import com.example.myapplication.data.models.InspectorToken
+import com.example.myapplication.data.network.ApiClient
+import com.example.myapplication.data.repository.InspectorRepository
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 
 class InspectorViewModel(
-    private val repo: MensajeSaliRepository = MensajeSaliRepository()
+    private val repo: InspectorRepository = InspectorRepository(ApiClient.api)
 ) : ViewModel() {
 
-    private val _mensaje = MutableStateFlow<MensajeSali?>(null)
-    val mensaje: StateFlow<MensajeSali?> = _mensaje
+    private val _estado = MutableStateFlow("Servicio inactivo")
+    val estado = _estado.asStateFlow()
 
-    private var lastId: Int? = null
-
-    suspend fun fetchUltimo(): MensajeSali? {
-        return try {
-            val ultimo = repo.fetchUltimoMensaje()
-            if (ultimo != null && ultimo.id != lastId) {
-                _mensaje.value = ultimo
-                lastId = ultimo.id
+    fun activarToken(token: InspectorToken) {
+        viewModelScope.launch {
+            try {
+                repo.activarToken(token)
+                _estado.value = "Token activado"
+            } catch (e: Exception) {
+                _estado.value = "Error al activar: ${e.message}"
             }
-            ultimo
-        } catch (e: Exception) {
-            e.printStackTrace()
-            null
         }
+    }
+
+    fun desactivarToken(token: String) {
+        viewModelScope.launch {
+            try {
+                repo.desactivarToken(token)
+                _estado.value = "Token desactivado"
+            } catch (e: Exception) {
+                _estado.value = "Error al desactivar: ${e.message}"
+            }
+        }
+    }
+    fun setEstado(nuevoEstado: String) {
+        _estado.value = nuevoEstado
     }
 }
