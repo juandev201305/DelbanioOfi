@@ -12,17 +12,21 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.myapplication.data.models.Letra
+import com.example.myapplication.ui.viewModel.CursoViewModel
 import com.example.myapplication.ui.viewModel.NivelViewModel
+import androidx.compose.runtime.getValue
 
 @OptIn(ExperimentalMaterial3Api::class)
+
 @Composable
 fun LetraScreen(
     navController: NavController,
     nivelId: Int,
     profesorId: Int,
     tipoPermisoId: Int,
-    viewModel: NivelViewModel
+    viewModel: CursoViewModel
 ) {
+    val cursos by viewModel.cursos.collectAsState(initial = emptyList())
     val letras = viewModel.obtenerLetrasPorNivel(nivelId)
 
     Scaffold(
@@ -38,20 +42,27 @@ fun LetraScreen(
         }
     ) { padding ->
         Column(
-            modifier = Modifier.fillMaxSize().padding(16.dp),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
+                .padding(16.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            letras.forEach { letra ->
-                Button(
-                    onClick = {
-                        navController.navigate("alumnos/$nivelId/${letra.id}/$profesorId/$tipoPermisoId")
-                    },
-                    modifier = Modifier.fillMaxWidth(0.5f)
-                ) {
-                    Text("Letra: ${letra.letra}")
+            if (letras.isEmpty()) {
+                Text("No hay letras disponibles para este nivel")
+            } else {
+                letras.forEach { letra ->
+                    Button(
+                        onClick = {
+                            navController.navigate("alumnos/$nivelId/${letra.id}/$profesorId/$tipoPermisoId")
+                        },
+                        modifier = Modifier.fillMaxWidth(0.6f)
+                    ) {
+                        Text("Letra: ${letra.letra}")
+                    }
+                    Spacer(Modifier.height(12.dp))
                 }
-                Spacer(Modifier.height(12.dp))
             }
         }
     }

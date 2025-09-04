@@ -24,7 +24,7 @@ import retrofit2.converter.gson.GsonConverterFactory
  * instancia en toda la App.
  */
 object ApiClient {
-    private const val URL_BASE = "http://181.212.53.98:8080/liceo/"
+    private const val URL_BASE = "http://181.212.53.98:9090/liceo/"
 
     private val cliente by lazy {
         val log = HttpLoggingInterceptor().apply {

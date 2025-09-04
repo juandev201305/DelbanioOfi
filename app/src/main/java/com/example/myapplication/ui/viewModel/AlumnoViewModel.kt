@@ -35,8 +35,9 @@ class AlumnoViewModel(
         val nivel = _niveles.value.find { it.id == nivelId } ?: return emptyList()
         val curso = nivel.cursos.find { it.letra.id == letraId } ?: return emptyList()
 
-        return curso.alumnos.map { alumno ->
-            alumno.copy(curso = curso) // 🔥 aquí le inyectas el curso
+        // 🔥 Si alumnos viene null → devolvemos emptyList
+        return (curso.alumnos ?: emptyList()).map { alumno ->
+            alumno.copy(curso = curso)
         }
     }
 }

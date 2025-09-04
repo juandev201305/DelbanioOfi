@@ -1,5 +1,6 @@
 package com.example.myapplication.ui.screen
 
+import androidx.compose.runtime.getValue
 
 
 import androidx.compose.foundation.layout.*
@@ -18,6 +19,7 @@ import androidx.navigation.NavController
 import com.example.myapplication.data.models.Profesor
 import com.example.myapplication.data.models.TipoPermiso
 import com.example.myapplication.ui.viewModel.AlumnoViewModel
+import com.example.myapplication.ui.viewModel.CursoViewModel
 import com.example.myapplication.ui.viewModel.NivelViewModel
 import com.example.myapplication.ui.viewModel.ProfesorViewModel
 import com.example.myapplication.ui.viewModel.TipoPermisoViewModel
@@ -30,9 +32,11 @@ fun AlumnoScreen(
     letraId: Int,
     profesorId: Int,
     tipoPermisoId: Int,
-    viewModel: AlumnoViewModel = viewModel()
+    cursoViewModel: CursoViewModel // 👈 en vez de AlumnoViewModel
 ) {
-    val alumnos = viewModel.obtenerAlumnos(nivelId, letraId)
+    val cursos by cursoViewModel.cursos.collectAsState(initial = emptyList())
+    val curso = cursoViewModel.obtenerCurso(nivelId, letraId)
+    val alumnos = curso?.alumnos ?: emptyList()
 
     Scaffold(
         topBar = {
@@ -47,19 +51,26 @@ fun AlumnoScreen(
         }
     ) { padding ->
         Column(
-            modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(16.dp),
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            alumnos.forEach { alumno ->
-                Button(
-                    onClick = {
-                        navController.navigate("ubicacion/${alumno.id}/$profesorId/$tipoPermisoId")
-                    },
-                    modifier = Modifier.fillMaxWidth(0.5f)
-                ) {
-                    Text(alumno.nombre)
+            if (alumnos.isEmpty()) {
+                Text("No hay alumnos en este curso")
+            } else {
+                alumnos.forEach { alumno ->
+                    Button(
+                        onClick = {
+                            navController.navigate("ubicacion/${alumno.id}/$profesorId/$tipoPermisoId")
+                        },
+                        modifier = Modifier.fillMaxWidth(0.5f)
+                    ) {
+                        Text(alumno.nombre)
+                    }
+                    Spacer(Modifier.height(12.dp))
                 }
-                Spacer(Modifier.height(12.dp))
             }
         }
     }

@@ -1,42 +1,49 @@
 package com.example.myapplication.ui.screen
 
-import android.Manifest
-import android.content.Intent
-import android.os.Build
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
+
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
-import com.example.myapplication.service.InspectorService
-import com.example.myapplication.utils.NotificationHelper
+import com.example.myapplication.data.models.InspectorToken
+import com.example.myapplication.ui.viewModel.InspectorViewModel
+import com.example.myapplication.utils.TokenManager
+import com.google.firebase.messaging.FirebaseMessaging
+
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun InspectorScreen(
-    navController: NavController? = null
-) {
+fun InspectorScreen(viewModel: InspectorViewModel, navController: NavController) {
+    val estadoServicio by viewModel.estado.collectAsState()
+    var tokenFCM by remember { mutableStateOf("") }
     val context = LocalContext.current
-    var estadoServicio by remember { mutableStateOf("") }
 
+    // Obtener token al cargar la pantalla
+    LaunchedEffect(Unit) {
+        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                tokenFCM = task.result
+
+                // 🔹 Si ya estaba activo antes, actualizar estado en la pantalla
+                if (TokenManager.estaActivo(context)) {
+                    viewModel.setEstado("Token activado")
+                }
+            }
+        }
+    }
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Inspector Panel") },
+                title = { Text("Activar Notificaciones") },
                 navigationIcon = {
-                    navController?.let {
-                        IconButton(onClick = { it.popBackStack() }) {
-                            Icon(
-                                Icons.AutoMirrored.Filled.ArrowBack,
-                                contentDescription = "Atrás"
-                            )
-                        }
+                    IconButton(onClick = { navController.popBackStack() }) {
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Volver")
                     }
                 }
             )
@@ -45,39 +52,42 @@ fun InspectorScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(padding)
                 .padding(24.dp),
-            verticalArrangement = Arrangement.Top
+            verticalArrangement = Arrangement.Center, // 👈 centra vertical
+            horizontalAlignment = Alignment.CenterHorizontally // 👈 centra horizontal
         ) {
-            // Estado actual
-            Text(
-                text = estadoServicio,
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.primary
-            )
+            Text(text = estadoServicio)
 
-            Spacer(Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
-            // 🔹 Botón ACTIVAR
             Button(
-                modifier = Modifier.fillMaxWidth(),
                 onClick = {
-                    val intent = Intent(context, InspectorService::class.java)
-                    ContextCompat.startForegroundService(context, intent)
-                    estadoServicio = "Notificaciones activadas"
+                    if (tokenFCM.isNotEmpty()) {
+                        val token = InspectorToken(
+                            idInspector = 1, // 👈 cámbialo si corresponde
+                            token = tokenFCM,
+                            activo = true
+                        )
+                        viewModel.activarToken(token)
+
+                        // Guardar en local
+                        TokenManager.guardarToken(context, tokenFCM)
+                    }
                 }
             ) {
                 Text("Activar notificaciones")
             }
 
-            Spacer(Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(8.dp))
 
-            // 🔹 Botón DESACTIVAR
             OutlinedButton(
-                modifier = Modifier.fillMaxWidth(),
                 onClick = {
-                    context.stopService(Intent(context, InspectorService::class.java))
-                    estadoServicio = "Notificaciones desactivadas"
+                    if (tokenFCM.isNotEmpty()) {
+                        viewModel.desactivarToken(tokenFCM)
+
+                        // Desactivar en local
+                        TokenManager.desactivarToken(context)
+                    }
                 }
             ) {
                 Text("Desactivar notificaciones")

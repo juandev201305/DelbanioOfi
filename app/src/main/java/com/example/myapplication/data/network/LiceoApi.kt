@@ -4,6 +4,7 @@ import com.example.myapplication.data.request.MensajeEntrRequest
 import com.example.myapplication.data.models.Alumno
 import com.example.myapplication.data.models.Curso
 import com.example.myapplication.data.models.Inspector
+import com.example.myapplication.data.models.InspectorToken
 import com.example.myapplication.data.models.Letra
 import com.example.myapplication.data.models.MensajeEntr
 import com.example.myapplication.data.models.MensajeSali
@@ -15,6 +16,7 @@ import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.Path
 
 /**
  * En esta interfaz se definen los endspoints de la api
@@ -55,6 +57,10 @@ interface LiceoApi {
     @GET("inspector")
     suspend fun getInspectores(): List<Inspector>
 
-    @GET("mensajeSali/ultimo")
-    suspend fun getUltimo(): Response<MensajeSali>
+    @POST("tokens/activar")
+    suspend fun activarToken(@Body token: InspectorToken): InspectorToken
+
+    @POST("tokens/desactivar/{token}")
+    suspend fun desactivarToken(@Path("token") token: String)
+
 }
