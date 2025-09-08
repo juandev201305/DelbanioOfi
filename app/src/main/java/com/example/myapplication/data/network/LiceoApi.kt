@@ -8,6 +8,7 @@ import com.example.myapplication.data.models.InspectorToken
 import com.example.myapplication.data.models.Letra
 import com.example.myapplication.data.models.MensajeEntr
 import com.example.myapplication.data.models.MensajeSali
+import com.example.myapplication.data.models.MensajeSaliDiario
 import com.example.myapplication.data.models.Nivel
 import com.example.myapplication.data.models.Profesor
 import com.example.myapplication.data.models.TipoPermiso
@@ -62,5 +63,8 @@ interface LiceoApi {
 
     @POST("tokens/desactivar/{token}")
     suspend fun desactivarToken(@Path("token") token: String)
+
+    @GET("/liceo/mensajesalientediario")
+    suspend fun getMensSalientesDiarios(): List<MensajeSaliDiario>
 
 }

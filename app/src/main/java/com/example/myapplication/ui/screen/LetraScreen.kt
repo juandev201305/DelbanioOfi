@@ -17,7 +17,6 @@ import com.example.myapplication.ui.viewModel.NivelViewModel
 import androidx.compose.runtime.getValue
 
 @OptIn(ExperimentalMaterial3Api::class)
-
 @Composable
 fun LetraScreen(
     navController: NavController,

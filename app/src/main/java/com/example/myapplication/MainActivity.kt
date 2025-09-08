@@ -104,7 +104,7 @@ class MainActivity : ComponentActivity() {
                         composable("inspectores") {
                             InspectorScreen(
                                 navController = navController,
-                                viewModel = inspectorViewModel
+                                inspectorViewModel = inspectorViewModel
                             )
                         }
 
