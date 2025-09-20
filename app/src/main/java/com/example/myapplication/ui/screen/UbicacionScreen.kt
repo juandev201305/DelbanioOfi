@@ -1,6 +1,7 @@
 package com.example.myapplication.ui.screen
 
 import android.widget.Toast
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -11,9 +12,12 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.myapplication.R // Asegúrate de que esta sea la ruta de tu proyecto R
 import com.example.myapplication.data.models.*
 import com.example.myapplication.data.network.ApiClient
 import com.example.myapplication.ui.viewModel.UbicacionViewModel
@@ -37,7 +41,7 @@ fun UbicacionScreen(
 
     var sending by remember { mutableStateOf(false) }
     var error by remember { mutableStateOf<String?>(null) }
-    var showDialog by remember { mutableStateOf(false) } // 👈 estado para el AlertDialog
+    var showDialog by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -83,7 +87,7 @@ fun UbicacionScreen(
                                     )
 
                                     if (response.isSuccessful) {
-                                        showDialog = true // 👈 muestra el dialogo
+                                        showDialog = true
                                     } else {
                                         error = "Error en el servidor: ${response.code()}"
                                     }
@@ -115,22 +119,37 @@ fun UbicacionScreen(
             }
         }
 
-        // 🚨 Aquí el AlertDialog de Compose
         if (showDialog) {
             AlertDialog(
                 onDismissRequest = { /* No se cierra tocando afuera */ },
                 confirmButton = {
                     TextButton(onClick = {
                         showDialog = false
-                        navController.navigate("home") { // 👈 ajusta el nombre de tu ruta
-                            popUpTo(0) { inclusive = true } // limpia el backstack
+                        navController.navigate("home") {
+                            popUpTo(0) { inclusive = true }
                         }
                     }) {
                         Text("OK")
                     }
                 },
-                title = { Text("PERMISO RECIBIDO") },
-                text = { Text("El permiso fue enviado correctamente.") }
+
+                text = {
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.guinogt),
+                            contentDescription = "Permiso Otorgado",
+                            modifier = Modifier.size(250.dp)
+                        )
+                        Spacer(Modifier.height(16.dp))
+                        Text(
+                            "El permiso fue enviado correctamente.",
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                }
             )
         }
     }

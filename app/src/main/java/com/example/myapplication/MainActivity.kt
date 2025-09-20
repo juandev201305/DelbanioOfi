@@ -1,6 +1,5 @@
 package com.example.myapplication
 
-
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -24,6 +23,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.myapplication.data.repository.InspectorRepository
+import com.example.myapplication.ui.screen.AcercaDe // <-- Importa la nueva pantalla
 import com.example.myapplication.ui.screen.AlumnoScreen
 
 import com.example.myapplication.ui.screen.HomeScreen
@@ -196,6 +196,11 @@ class MainActivity : ComponentActivity() {
                                 .find { it.id == tipoPermisoId } ?: return@composable
 
                             UbicacionScreen(navController, alumno, profesor, tipoPermiso)
+                        }
+
+                        // Nueva ruta para la pantalla "AcercaDe"
+                        composable("AcercaDe") {
+                            AcercaDe(navController = navController)
                         }
                     }
                 }

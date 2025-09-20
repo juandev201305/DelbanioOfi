@@ -92,7 +92,7 @@ fun InspectorScreen(
             Spacer(modifier = Modifier.height(24.dp))
 
             Text(
-                text = "Mensajes salientes diarios",
+                text = "Permisos solicitados",
                 style = MaterialTheme.typography.titleLarge,
                 modifier = Modifier.fillMaxWidth()
             )
