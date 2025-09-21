@@ -32,7 +32,7 @@ fun AlumnoScreen(
     letraId: Int,
     profesorId: Int,
     tipoPermisoId: Int,
-    cursoViewModel: CursoViewModel // 👈 en vez de AlumnoViewModel
+    cursoViewModel: CursoViewModel
 ) {
     val cursos by cursoViewModel.cursos.collectAsState(initial = emptyList())
     val curso = cursoViewModel.obtenerCurso(nivelId, letraId)
@@ -49,12 +49,13 @@ fun AlumnoScreen(
                 }
             )
         }
-    ) { padding ->
+    ) { innerPadding ->  // 👈 Cambia el nombre para usarlo
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
-                .padding(16.dp),
+                .padding(innerPadding)  // 👈 Aplica el padding del Scaffold
+                .padding(16.dp),  // 👈 Y adicionalmente 16dp
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             if (alumnos.isEmpty()) {

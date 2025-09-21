@@ -71,7 +71,7 @@ fun InspectorScreen(
             Button(
                 onClick = {
                     if (tokenFCM.isNotEmpty()) {
-                        val token = InspectorToken(idInspector = 1, token = tokenFCM, activo = true)
+                        val token = InspectorToken( token = tokenFCM, activo = true)
                         inspectorViewModel.activarToken(token)
                         TokenManager.guardarToken(context, tokenFCM)
                     }
